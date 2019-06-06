@@ -8,61 +8,50 @@ from pygame.locals import *
 pygame.init()
 
 GAME_TITLE = 'CellForRest'
-POINT_NAME = 'Leaf' # ゲーム内通貨
+POINT_NAME = 'Leaf' # Game currency
 DISPLAY_WIDTH = 1200
 DISPLAY_HEIGHT = 800
 
-# ゲーム内通貨の初期値
-game_point = 1000000
+game_point = 1000000 # Default game currency
 
-# Cave power
-cave_power = 1
+cave_power = 1 # Used by cell layer to increase cell power
 
-# 各ゲームレイヤーの名前
 CELL_LAYER_NAME = 'Cell'
 TREE_LAYER_NAME = 'Forest'
 CAVE_LAYER_NAME = 'Cave'
 
-# 各ゲームレイヤー表示ON/OFFの初期設定
+# Game layer ON/OFF
 menu_on = False
 cell_layer = True
 tree_layer = False
 cave_layer = False
 intro = True
 
-# 色の設定
 black = (0, 0, 0)
 white = (255, 255, 255)
 up_white = (205, 198, 169)
 red = (200, 0, 0)
 bright_red = (255, 0, 0)
 
-# ディスプレイを設定
 game_display = pygame.display.set_mode((DISPLAY_WIDTH, DISPLAY_HEIGHT))
 pygame.display.set_caption(GAME_TITLE)
 
- # クロック設定
 clock = pygame.time.Clock()
 
-# 背景画像のロード
-init_map = pygame.image.load(os.path.join('images', 'start.png')) # スタート画面
-cell_map = pygame.image.load(os.path.join('images', 'cell_map.png')) # cellレイヤー背景画像
-tree_map = pygame.image.load(os.path.join('images', 'tree_map.png')) # treeレイヤー背景画像
-cave_map = pygame.image.load(os.path.join('images', 'cave_map.png')) # caveレイヤー背景画像
-menu_background = pygame.image.load(os.path.join('images', 'menu_background.png')) # メニュー画面
+init_map = pygame.image.load(os.path.join('images', 'start.png')) # Start screen
+cell_map = pygame.image.load(os.path.join('images', 'cell_map.png')) # Cell layer background
+tree_map = pygame.image.load(os.path.join('images', 'tree_map.png')) # Tree layer background
+cave_map = pygame.image.load(os.path.join('images', 'cave_map.png')) # Cave layer background
+menu_background = pygame.image.load(os.path.join('images', 'menu_background.png')) # Menu screen
 
-# ボタン画像のロード
-button_up_white = pygame.image.load(os.path.join('images', 'button_up_white.png')) # カーソルオーバー時に使用
+button_up_white = pygame.image.load(os.path.join('images', 'button_up_white.png'))
 button_white = pygame.image.load(os.path.join('images', 'button_white.png'))
 button_black = pygame.image.load(os.path.join('images', 'button_black.png'))
 
-# アイコン画像のロードと設定
 icon_img = pygame.image.load(os.path.join('images', 'icon.png'))
 pygame.display.set_icon(icon_img)
 
-# フォントの設定
-# http://font.cutegirl.jp/ から使用
-FONT = 'JKG-L_3.ttf'
+FONT = 'JKG-L_3.ttf' # http://font.cutegirl.jp
 
 def gameInit():
     global intro
