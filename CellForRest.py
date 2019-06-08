@@ -20,7 +20,7 @@ CELL_LAYER_NAME = 'Cell'
 TREE_LAYER_NAME = 'Forest'
 CAVE_LAYER_NAME = 'Cave'
 
-# Game layer ON/OFF
+# Each game layer ON/OFF
 menu_on = False
 cell_layer = True
 tree_layer = False
@@ -53,116 +53,117 @@ pygame.display.set_icon(icon_img)
 
 FONT = 'JKG-L_3.ttf' # http://font.cutegirl.jp
 
+
+# Init start menu
+# Start button: init gameLoop()
+# x / quit button: quit game
 def gameInit():
     global intro
     while intro:
         for event in pygame.event.get():
-            if event.type == pygame.QUIT: # ×ボタンが押されたときにgameQuitする
+            if event.type == pygame.QUIT:
                 gameQuit()
-
         game_display.blit(init_map, (0,0))
         textDisplay(GAME_TITLE, FONT, 150, white, (DISPLAY_WIDTH/2), (DISPLAY_HEIGHT / 8)*3)
 
-        button("Start",20,black,(DISPLAY_WIDTH/4),(DISPLAY_HEIGHT/4)*3,100,50,button_white,button_up_white, gameLoop) # Startが押されたらgameLoopを実行
-        button("Quit", 20, black, (DISPLAY_WIDTH / 4)*3-50, (DISPLAY_HEIGHT / 4)*3, 100, 50, button_white, button_up_white, gameQuit) # Quitが押されたらgameQuitを実行
+        button("Start",20,black,(DISPLAY_WIDTH/4),(DISPLAY_HEIGHT/4)*3,100,50,button_white,button_up_white, gameLoop)
+        button("Quit", 20, black, (DISPLAY_WIDTH / 4)*3-50, (DISPLAY_HEIGHT / 4)*3, 100, 50, button_white, button_up_white, gameQuit)
 
-        # ディスプレイ更新
         pygame.display.update()
         clock.tick(60)
 
+
+# Game loop: event.get() -> update() -> draw() -> display.update() -> clear()
+# x button: Quit game
+# m button: Menu
+# Left click: Inform each game layer via setMouseEventUp()
 def gameLoop():
     global intro
     intro = False
     game_exit = False
 
-    # レイヤを生成
     cellLayerManager = CellLayerManager()
     treeLayerManager = TreeLayerManager()
     caveLayerManager = CaveLayerManager()
 
-    # ゲームループ
     while not game_exit:
-        # マウスイベントの取得
         for event in pygame.event.get():
-            if event.type == pygame.QUIT:  # ×ボタンが押されたときにgameQuitする
+            if event.type == pygame.QUIT:
                 gameQuit()
-            elif event.type == pygame.KEYDOWN:  # mキーが押されて時にmenuを開く
+            elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_m:
                     menu()
-            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:  # 左クリックされたときに各レイヤに知らせる
+            elif event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                # cellLayerManeger uses pygame.mouse.get_pressed()
                 treeLayerManager.setMouseEventUp(True)
                 caveLayerManager.setMouseEventUp(True)
 
-        # レイヤを更新
         cellLayerManager.update()
         treeLayerManager.update()
         caveLayerManager.update()
 
-        # どのレイヤーを描画するかを制御
-        # マウスイベント処理もdraw()内に記述
         if cell_layer == True:
             cellLayerManager.draw()
-
         elif tree_layer == True:
             treeLayerManager.draw()
-
         elif cave_layer == True:
             caveLayerManager.draw()
 
-
-
-        # ゲームdisplayの更新
         pygame.display.update()
         clock.tick(60)
 
-        # クリア処理
         treeLayerManager.clear()
         caveLayerManager.clear()
 
-# ゲームの終了
+
 def gameQuit():
     pygame.quit()
     quit()
 
-# メニュー画面を表示　
+
 def menu():
     global menu_on
     menu_on = True
 
     game_display.blit(menu_background, (0, 0))
     textDisplay('PAUSE', FONT, 100, black, (DISPLAY_WIDTH / 2), (DISPLAY_HEIGHT / 2))
+
     while menu_on:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameQuit()
 
-        button("Back", 20, white, (DISPLAY_WIDTH / 4), (DISPLAY_HEIGHT / 4)*3, 100, 50, button_black, button_up_white, unmenu) # Backボタンでunmenuを実行
-        button("Quit", 20, white, (DISPLAY_WIDTH / 4)*3, (DISPLAY_HEIGHT / 4)*3, 100, 50, button_black, button_up_white, gameQuit) # QuitボタンでgameQuitを実行
+        button("Back", 20, white, (DISPLAY_WIDTH / 4), (DISPLAY_HEIGHT / 4)*3, 100, 50, button_black, button_up_white, quitMenu)
+        button("Quit", 20, white, (DISPLAY_WIDTH / 4)*3, (DISPLAY_HEIGHT / 4)*3, 100, 50, button_black, button_up_white, gameQuit)
 
         pygame.display.update()
         clock.tick(60)
 
-# menuを終了
-def unmenu():
+
+def quitMenu():
     global menu_on
     menu_on = False
 
-# ボタンを設置
-# ボタンが押された時にはactionに指定されたメソッドを実行
-# msgに指定された文字をボタンに描画
+
+# Create a button
+# Button pressed: Execute action()
+# msg: Text displayed on the button
+# if mouseover: ac drawed
+#   else: ic drawed
 def button(msg, size, msg_color, x, y, w, h, ic, ac, action = None):
     mouse = pygame.mouse.get_pos()
     click = pygame.mouse.get_pressed()
-    if x+w > mouse[0] > x and y+h > mouse[1] > y: # マウスオーバーした時にはacを描画
+
+    if x+w > mouse[0] > x and y+h > mouse[1] > y:
         game_display.blit(ac,(x,y))
         if click[0] == 1 and action != None:
             action()
     else:
-        game_display.blit(ic,(x,y)) # マウスオーバーしてないときにはicを描画
+        game_display.blit(ic,(x,y))
 
     textDisplay(msg, FONT, size, msg_color, (x+(w/2)), (y+(h/2)))
 
-# テキストの表示 中央位置で指定する
+
 def textDisplay(text, font, size, color, center_x, center_y):
     textFont = pygame.font.Font(font, size)
     TextSurf = textFont.render(text, True, color)
@@ -170,7 +171,7 @@ def textDisplay(text, font, size, color, center_x, center_y):
     TextRect.center = (center_x, center_y)
     game_display.blit(TextSurf, TextRect)
 
-# cellレイヤーに切り替える
+
 def goToCellLayer():
     global cell_layer
     global tree_layer
@@ -179,7 +180,7 @@ def goToCellLayer():
     tree_layer = False
     cave_layer = False
 
-# treeレイヤーに切り替える
+
 def goToTreeLayer():
     global cell_layer
     global tree_layer
@@ -188,7 +189,7 @@ def goToTreeLayer():
     tree_layer = True
     cave_layer = False
 
-# villaegレイヤーに切り替える
+
 def goToCaveLayer():
     global cell_layer
     global tree_layer
@@ -197,73 +198,57 @@ def goToCaveLayer():
     tree_layer = False
     cave_layer = True
 
-"""
-cellレイヤーのインスタンス管理を行う
-cellレイヤーにはGateのインスタンスが一つ、Cellのインスタンスが複数存在する
-gate.is_generating == True のとき、cellの生成処理を行う"""
+
+# Manage cell layer instances: gate and cell
 class CellLayerManager:
     def __init__(self):
-        self.gate = Gate(DISPLAY_WIDTH/2-60, DISPLAY_HEIGHT/2-60) # gateを生成
+        self.gate = Gate(DISPLAY_WIDTH/2-60, DISPLAY_HEIGHT/2-60)
 
-    # cellレイヤの状態を更新
     def update(self):
         global game_point
 
-        # gateの更新
         self.gate.update()
 
-        # 出芽してないcellの更新
         for i in Cell.cell_list:
             i.update()
-            if i.cell_age % i.divide_per == 0 and i.divide_limit > 0: # cellの複製
+            if i.cell_age % i.divide_per == 0 and i.divide_limit > 0:
                 self.genCell('SON',i.cell_x,i.cell_y,random.randrange(0, 8))
                 i.divide_limit -= 1
-            if i.cell_age > i.budding_time: # cellの発芽
+            if i.cell_age > i.budding_time:
                 i.budding()
                 Cell.bud_list.append(i)
                 Cell.cell_list.remove(i)
 
-        # 出芽したcellの更新
         for i in Cell.bud_list:
-            if i.is_harvested == True: # 収穫されたかどうか
+            if i.is_harvested == True:
                 Cell.bud_list.remove(i)
                 game_point += i.cell_power * cave_power
 
-    # cellレイヤを描画
-    """
-    TODO: cellが多いと描画がカクつく
-          リストをforループで回すのではなく、イテレータを使った方が処理が早くなる...?
-          Flyweightデザインパターンも要チェック"""
+    # TODO: Improve draw speed
     def draw(self):
-        game_display.blit(cell_map, (0, 0)) # cellレイヤ背景の描画
+        game_display.blit(cell_map, (0, 0))
 
-        # 各インスタンスの描画
-        # イテレータにした方が処理速い？
         self.gate.draw()
+
         for i in Cell.cell_list:
             i.draw()
         for i in Cell.bud_list:
             i.draw()
 
-
-        # gateがクリックされているとき、cellを生成する
         if self.gate.is_generating == True:
                 self.cellgenerating()
 
-        # game_pointの表示
-        textDisplay(POINT_NAME+': '+str(math.floor(game_point)),FONT,30,black,DISPLAY_WIDTH/2,20)
-
-        # 生成中のcellの描画
         game_display.blit(Cell.cell_gen_img_list[Cell.cell_gen_count], (self.gate.gate_x, self.gate.gate_y))
 
-        # レイヤー切り替えボタンの描画
+        textDisplay(POINT_NAME+': '+str(math.floor(game_point)),FONT,30,black,DISPLAY_WIDTH/2,20)
+
         button(CELL_LAYER_NAME,20,white,0,0,100,50,button_up_white,button_up_white,goToCellLayer)
         button(TREE_LAYER_NAME,20,white,110,0,100,50,button_black,button_up_white,goToTreeLayer)
         button(CAVE_LAYER_NAME,20,white,220,0,100,50,button_black,button_up_white,goToCaveLayer)
 
-    # cellの生成を進める
     def cellgenerating(self):
         global game_point
+
         if game_point > 0:
             game_point -= 1
             if Cell.cell_gen_count < Cell.cell_gen_img_list_size:
@@ -271,68 +256,62 @@ class CellLayerManager:
             else:
                 self.genCell('NEW',self.gate.gate_x+20,self.gate.gate_y+40,6)
                 Cell.cell_gen_count = 0
-        else: # game_pointの不足
+        else:
             textDisplay('NO '+POINT_NAME+'!',FONT,20,red,self.gate.gate_x+self.gate.gate_width/2,self.gate.gate_y-20)
 
-    # cellを生成、リストに加える
     def genCell(self,name,x,y,dir):
         cell = Cell(name,x,y,dir)
         Cell.cell_list.append(cell)
 
-"""
-Gateをクリックするとcellが生成される"""
+
+# While Gate pressed, generate a cell gradually
+# Cell generation process is executed in CellLayerManager
 class Gate:
     def __init__(self, x, y):
-        # 画像のロード
-        self.gate_act = pygame.image.load(os.path.join('images', 'gate_act.png')) # マウスオーバー中の画像
-        self.gate_inact = pygame.image.load(os.path.join('images', 'gate_inact.png')) # マウスオーバーしてないときの画像
+        self.gate_act = pygame.image.load(os.path.join('images', 'gate_act.png'))
+        self.gate_inact = pygame.image.load(os.path.join('images', 'gate_inact.png'))
 
-        # gateの大きさと座標
         self.gate_width = self.gate_act.get_width()
         self.gate_height = self.gate_act.get_height()
         self.gate_x = x
         self.gate_y = y
 
-        # gateの状態
-        self.is_generating = False # cellを生成中かどうか　生成の処理はcellLayerManagerで行う
+        self.is_generating = False
 
     def update(self):
         self.is_generating = False
 
-    # マウスオーバーを検知し、表示画像を切り替える
-    # 押されている間を検知し、cell生成状態になる　cellの生成処理自体はcellLayerManagerが担う
+    # if mouseover: gate_act drawed
+    #     else: gate_inact drawed
     def draw(self):
         mouse = pygame.mouse.get_pos()
         click = pygame.mouse.get_pressed()
 
         if self.gate_x+self.gate_width > mouse[0] > self.gate_x and self.gate_y+self.gate_height > mouse[1] > self.gate_y:
-            game_display.blit(self.gate_act, (self.gate_x, self.gate_y)) # マウスオーバー中の描画
-            if click[0] == 1: # gateがクリックされている
+            game_display.blit(self.gate_act, (self.gate_x, self.gate_y))
+            if click[0] == 1:
                 self.is_generating = True
         else:
-            game_display.blit(self.gate_inact, (self.gate_x, self.gate_y)) # マウスオーバーしてないときの描画
+            game_display.blit(self.gate_inact, (self.gate_x, self.gate_y))
 
-"""
-cellは動き回る
-一定時間たつと分裂する
-さらに一定時間たつと出芽する
-出芽したcellをクリックすると採収できる"""
+
+# Cells move around
+# After while (budding_time), cell changes to bud
+# Buds can be harvested by clicking
 class Cell:
-    # cell全体を格納するリスト
-    cell_list = [] # cellインスタンスを格納
-    bud_list = [] # 発芽後のcellインスタンスを格納
+    # Instance list
+    cell_list = []
+    bud_list = []
 
-    # cell生成エフェクトの保持
-    cell_gen_img_list = [] # cell生成エフェクトの画像を格納
-    cell_gen_img_list_size = 74 # cell1生成エフェクト画像の総数
-    cell_gen_count = 0 # 生成中のcellがどこまで生成されたかを保持
+    # Cell generation image list
+    cell_gen_img_list = []
+    cell_gen_img_list_size = 74
+    cell_gen_count = 0
 
-    # cell_gen_img_listにcell生成エフェクトの画像をロード
     for i in range(cell_gen_img_list_size+1):
         cell_gen_img_list.append(pygame.image.load(os.path.join('images', 'generate_' + str(i) + '.png')))
 
     def __init__(self,name,x,y,dir):
-        # 各cell画像のロード
         self.cell_img_stay = pygame.image.load(os.path.join('images', 'cell_img_stay.png'))
         self.cell_img_left = pygame.image.load(os.path.join('images', 'cell_img_left.png'))
         self.cell_img_right = pygame.image.load(os.path.join('images', 'cell_img_right.png'))
@@ -340,27 +319,25 @@ class Cell:
         self.cell_img_up = pygame.image.load(os.path.join('images', 'cell_img_up.png'))
         self.bud_img = pygame.image.load(os.path.join('images', 'bud.png'))
         self.bud_act_img = pygame.image.load(os.path.join('images', 'bud_act.png'))
-        self.cell_img = self.cell_img_stay # 表示する画像を格納
+        self.cell_img = self.cell_img_stay # Store a image to display
 
-        # cellの大きさと座標
         self.cell_width = self.cell_img.get_width()
         self.cell_height = self.cell_img.get_height()
         self.cell_x = x
         self.cell_y = y
 
-        #cellの状態
-        self.divide_limit = 1 # 分裂できる回数
-        self.divide_per = 200 # 何フレームに一回分裂するか
-        self.cell_age = 0 # 生まれてから何フレーム生きたか
-        self.budding_time = 500 # 生まれてから何フレームで出芽するか
-        self.cell_power = 40 # 収穫時にgame_pointに加算される値
-        self.is_budded = False # 出芽したか
-        self.is_harvested = False # 採収されたか
+        self.divide_limit = 1 # times
+        self.divide_per = 200 # frames
+        self.cell_age = 0 # frames
+        self.budding_time = 500 # frames
+        self.cell_power = 40 # Added to game_point when harvested
+        self.is_budded = False
+        self.is_harvested = False
 
-        self.is_moving = True # cellは移動中か
-        self.move_count = 0 #移動を始めてから何フレーム経ったか
-        self.cell_speed = 1 # cellの移動速度
-        self.cell_dir = dir # 移動方向
+        self.is_moving = True
+        self.move_count = 0 # frames after started to move
+        self.cell_speed = 1 # pixel
+        self.cell_dir = dir
 
         self.cell_name = name
 
@@ -372,6 +349,7 @@ class Cell:
     def draw(self):
         click = pygame.mouse.get_pressed()
         mouse = pygame.mouse.get_pos()
+
         if self.is_budded == False:
             game_display.blit(self.cell_img, (self.cell_x, self.cell_y))
         else:
@@ -379,15 +357,13 @@ class Cell:
                 game_display.blit(self.bud_act_img, (self.cell_x, self.cell_y))
                 if click[0] == 1:
                     self.is_harvested = True
-
-
             else:
                 game_display.blit(self.bud_img, (self.cell_x, self.cell_y))
 
-    # cellの移動
     def move(self):
         if self.is_moving:
-            # 壁に当たると止まる
+
+            # Wall collision: Stop moving
             if self.cell_x < 0:
                 self.cell_x = 0
                 self.is_moving = False
@@ -401,40 +377,41 @@ class Cell:
                 self.cell_y = DISPLAY_HEIGHT - self.cell_height
                 self.is_moving = False
 
-            # 移動する
+            # Normal move: Stay or move random dirction
             else:
                 if self.move_count > 100:
                     self.is_moving = False
                     self.cell_img = self.cell_img_stay
                     self.move_count = 0
-                else: # 移動方向/速度を乱数で決める
-                    if self.cell_dir == 0:# 右方向
+                else:
+                    if self.cell_dir == 0: # Move to right
                         self.cell_img = self.cell_img_right
                         self.cell_x += self.cell_speed
-                    elif self.cell_dir == 1:# 左方向
+                    elif self.cell_dir == 1: # Move to left
                         self.cell_img = self.cell_img_left
                         self.cell_x -= self.cell_speed
-                    elif self.cell_dir == 2:# 下方向
+                    elif self.cell_dir == 2: # Move down
                         self.cell_img = self.cell_img_down
                         self.cell_y += self.cell_speed
-                    elif self.cell_dir == 3:# 上方向
+                    elif self.cell_dir == 3: # Move up
                         self.cell_img = self.cell_img_up
                         self.cell_y -= self.cell_speed
-                    elif self.cell_dir == 4:# 右方向に速く
+                    elif self.cell_dir == 4: # Move to right faster
                         self.cell_img = self.cell_img_right
-                        self.cell_x += self.cell_speed*2
-                    elif self.cell_dir == 5:# 左方向に速く
+                        self.cell_x += self.cell_speed * 2
+                    elif self.cell_dir == 5: # Move to left faster
                         self.cell_img = self.cell_img_left
-                        self.cell_x -= self.cell_speed*2
-                    elif self.cell_dir == 6:# 下方向に速く
+                        self.cell_x -= self.cell_speed * 2
+                    elif self.cell_dir == 6: # Move down faster
                         self.cell_img = self.cell_img_down
-                        self.cell_y += self.cell_speed*2
-                    elif self.cell_dir == 7:# 上方向に速く
+                        self.cell_y += self.cell_speed * 2
+                    elif self.cell_dir == 7: # Move up faster
                         self.cell_img = self.cell_img_up
-                        self.cell_y -= self.cell_speed*2
-                    self.move_count +=1
+                        self.cell_y -= self.cell_speed * 2
 
-        else: # 移動してないときの処理
+                    self.move_count += 1
+
+        else: # Stopping
             if self.move_count > 100:
                 self.is_moving = True
                 self.cell_dir = random.randrange(0, 8)
@@ -443,23 +420,22 @@ class Cell:
                 self.cell_img = self.cell_img_stay
                 self.move_count += 1
 
-    # cellを出芽状態にする
     def budding(self):
         self.is_budded = True
 
-"""
-treeレイヤーのインスタンス管理を行う
-treeレイヤーにはTreeのインスタンスが一つ、Humanのインスタンスが複数存在する"""
+
+# Manage tree layer instances: tree and humans
 class TreeLayerManager:
     def __init__(self):
         self.tree = Tree()
         self.house = House()
         self.mouseEventUp = False
 
-    # マウスイベントをゲームループから受け取る
-    def setMouseEventUp(self,event):
-        self.mouseEventUp = event
+    # Get left click from gameLoop()
+    def setMouseEventUp(self,is_clicked):
+        self.mouseEventUp = is_clicked
 
+    # Increase game_point every frame by tree_power * human
     def update(self):
         global game_point
 
@@ -468,84 +444,62 @@ class TreeLayerManager:
         for i in Human.human_list:
             i.update()
 
-        # treeレベル*Human数に応じて自動的にgame_pointを増やす
         game_point += self.tree.tree_power[self.tree.tree_level] * (self.house.gen_count + 1)
 
     def draw(self):
-        # treeレイヤー背景画像の描画
         game_display.blit(tree_map, (0, 0))
 
-        # 各インスタンスの描画
         self.tree.draw(self.mouseEventUp)
         self.house.draw(self.mouseEventUp)
         for i in Human.human_list:
             i.draw()
 
-        # Human 生成
-        # if self.house.is_generating == True:
-        #     self.genHuman('name',DISPLAY_WIDTH)
-        #     self.house.is_generating = False
-
-        # game_pointの描画
         textDisplay(POINT_NAME+': '+str(math.floor(game_point)),FONT,30,black,DISPLAY_WIDTH/2,20)
 
-        # レイヤ切り替えボタンの描画
         button(CELL_LAYER_NAME,20,white,0,0,100,50,button_black,button_up_white,goToCellLayer)
         button(TREE_LAYER_NAME,20,white,110,0,100,50,button_up_white,button_up_white,goToTreeLayer)
         button(CAVE_LAYER_NAME,20,white,220,0,100,50,button_black,button_up_white,goToCaveLayer)
 
-    # draw後に実行
     def clear(self):
         self.setMouseEventUp(False)
 
 
-    # humanを生成、リストに加える
-    # def genHuman(self,name,x):
-    #     global game_point
-    #     if(game_point >= self.house.cost[self.house.gen_count]):
-    #         game_point -= self.house.cost[self.house.gen_count]
-    #         human = Human(name,x)
-    #         Human.human_list.append(human)
-    #         self.house.gen_count += 1
-    #     else:
-    #         textDisplay('NO Leaf!',FONT,20,red,self.house.y-20,self.house.y-100)
-
-
-
+# They walk around
+# And increase tree_power
 class Human:
+    # Instance list
     human_list = []
 
     def __init__(self, name, x):
-        # 画像のロード
         self.human_stay = pygame.image.load(os.path.join('images', 'human_stay.png'))
         self.human_left = pygame.image.load(os.path.join('images', 'human_left.png'))
         self.human_right = pygame.image.load(os.path.join('images', 'human_right.png'))
-        self.human_img = self.human_left # 表示画像の保持
+        self.human_img = self.human_left # Store image to display
 
-        # humanの大きさと座標
         self.human_width = self.human_img.get_width()
         self.human_height = self.human_img.get_height()
         self.human_x = x
         self.human_y = DISPLAY_HEIGHT - self.human_height
 
-        # 移動パラメータ
         self.human_moving = True
-        self.move_count = 0
-        self.human_speed = 2
-        self.human_dir = 2
+        self.move_count = 0 # frame
+        self.human_speed = 2 # pixels
+        self.human_dir = 2 # Left
 
         self.human_name = name
 
     def move(self):
         if self.human_moving:
-            #Wall collision
+
+            # Wall collision: Stop moveing
             if self.human_x < 0:
                 self.human_x = 0
                 self.human_moving = False
             elif self.human_x > DISPLAY_WIDTH - self.human_width:
                 self.human_x = DISPLAY_WIDTH - self.human_width
                 self.human_moving = False
-            #Move
+
+            # Normal move: Stay or move random dirction (left / right)
             else:
                 if self.move_count > 20:
                     self.human_moving = False
@@ -555,15 +509,16 @@ class Human:
                     if self.human_dir == 0:#Go left
                         self.human_img = self.human_left
                         self.human_x -= self.human_speed
-                    elif self.human_dir == 1:#Go Right
+                    elif self.human_dir == 1:#Go right
                         self.human_img = self.human_right
                         self.human_x += self.human_speed
-                    elif self.human_dir == 2:#Go Left Long
+                    elif self.human_dir == 2:#Go left faster
                         self.human_img = self.human_left
-                        self.human_x -= self.human_speed*2
-                    elif self.human_dir == 3:#Go Right Long
+                        self.human_x -= self.human_speed * 2
+                    elif self.human_dir == 3:#Go right
                         self.human_img = self.human_right
-                        self.human_x += self.human_speed*2
+                        self.human_x += self.human_speed * 2
+
                     self.move_count +=1
         else:
             if self.move_count > 15:
@@ -580,6 +535,10 @@ class Human:
     def draw(self):
         game_display.blit(self.human_img, (self.human_x, self.human_y))
 
+
+# Tree increases game_point by tree_power every frame
+# if Tree clicked: treeShopping window appears
+#     if "Level Up" button clicked: Tree level up
 class Tree:
     def __init__(self):
         self.tree_img_list_num = 8
@@ -595,6 +554,7 @@ class Tree:
         self.tree_power =[0, 0.1, 1, 11, 111, 1111, 11111, 111111]
 
         self.tree_shop = False
+
         for i in range(self.tree_img_list_num):
             self.tree_img_list.append(pygame.image.load(os.path.join('images','tree_' + str(i) + '.png')))
             self.tree_ac_img_list.append(pygame.image.load(os.path.join('images','tree_ac_' + str(i) + '.png')))
@@ -605,60 +565,61 @@ class Tree:
     def update(self):
         pass
 
+    # if mouseover: tree_ac_img_list drawed
+    #     else: tree_img_list drawed
+    # Click out of tree: disappear treeShopping button
     def draw(self,mouseEventUp):
         mouse = pygame.mouse.get_pos()
 
-        # マウスオーバー時には白く光る(ac画像を表示)
-        # マウスオーバー時に左クリックすると、tree_shoppingボタンが出現する
-        # treeとtree_shoppingボタン以外をクリックすると、tree_shoppingボタンは消える
         if self.tree_xy_list[self.tree_level][0]+self.tree_width_list[self.tree_level] > mouse[0] > self.tree_xy_list[self.tree_level][0] and self.tree_xy_list[self.tree_level][1]+self.tree_height_list[self.tree_level] > mouse[1] > self.tree_xy_list[self.tree_level][1]:
-            if mouseEventUp == True:  #左クリック時
+            if mouseEventUp == True:
                 self.tree_shop = True
             game_display.blit(self.tree_ac_img_list[self.tree_level],self.tree_xy_list[self.tree_level])
         else:
             if mouseEventUp == True:
-                self.close_tree_window()
+                self.closeTreeShopping()
             game_display.blit(self.tree_img_list[self.tree_level],self.tree_xy_list[self.tree_level])
 
         if self.tree_shop == True:
             if self.tree_level < len(self.tree_img_list) - 1:
-                self.tree_shopping()
+                self.treeShopping()
             else:
-                #TODO: treeが最高レベルの処理
+                # If tree_level reaches max level...
                 pass
 
-    def tree_shopping(self):
+    def treeShopping(self):
         textDisplay('Cost: '+str(self.tree_cost[self.tree_level])+'Leaf',FONT,20,black,DISPLAY_WIDTH/2,self.tree_xy_list[self.tree_level][1]-70)
-        button("Level UP",20,white,DISPLAY_WIDTH/2-50,self.tree_xy_list[self.tree_level][1]-50,100,50,button_black,button_up_white,self.tree_growth)
+        button("Level Up",20,white,DISPLAY_WIDTH/2-50,self.tree_xy_list[self.tree_level][1]-50,100,50,button_black,button_up_white,self.treeGrowth)
 
-    def tree_growth(self):
+    def treeGrowth(self):
         global game_point
         if game_point >= self.tree_cost[self.tree_level]:
             game_point -= self.tree_cost[self.tree_level]
             self.tree_level += 1
-            self.close_tree_window()
+            self.closeTreeShopping()
         else:
             textDisplay('NO Leaf!',FONT,20,red,DISPLAY_WIDTH/2,self.tree_xy_list[self.tree_level][1]-100)
 
-    def close_tree_window(self):
+    def closeTreeShopping(self):
         self.tree_shop = False
 
 
+# House creates humans
+# if House clicked: Shopping window appears
+#     if "Human +1" button clicked: Create a human
 class House:
     def __init__(self):
         self.act_img = pygame.image.load(os.path.join('images', 'house_act.png'))
         self.inact_img = pygame.image.load(os.path.join('images', 'house_inact.png'))
 
-        # 大きさと座標
         self.width = self.act_img.get_width()
         self.height = self.act_img.get_height()
         self.x = DISPLAY_WIDTH - self.width
         self.y = DISPLAY_HEIGHT - self.height
 
-        # Human生成コスト
+        # Human creation cost
         self.cost =[100, 500, 1000, 3000, 10000, 50000, 100000]
 
-        # Human生成数
         self.gen_count = 0
 
         self.is_shopping = False
@@ -667,12 +628,12 @@ class House:
     def update(self):
         pass
 
+    # if mouseover: act_img drawed
+    #     else: inact_img drawed
+    # Click out of house: disappear shopping button
     def draw(self,mouseEventUp):
         mouse = pygame.mouse.get_pos()
 
-        # マウスオーバー時には白く光る(ac画像を表示)
-        # マウスオーバー時に左クリックすると、house_shoppingボタンが出現する
-        # houseとhouse_shoppingボタン以外をクリックすると、house_shoppingボタンは消える
         if self.x+self.width > mouse[0] > self.x and self.y+self.height > mouse[1] > self.y:
             if mouseEventUp == True:
                 self.is_shopping = True
@@ -705,42 +666,40 @@ class House:
         else:
             textDisplay('NO Leaf!',FONT,20,red,self.house.y-20,self.house.y-100)
 
+
+# Manage cave layer instance: blueGem
 class CaveLayerManager:
     def __init__(self):
         self.blueGem = BlueGem()
         self.mouseEventUp = False
 
-    # マウスイベントをゲームループから受け取る
-    def setMouseEventUp(self,event):
-        self.mouseEventUp = event
+    # Get left click from gameLoop()
+    def setMouseEventUp(self,is_clicked):
+        self.mouseEventUp = is_clicked
 
-    # caveレイヤの状態を更新
     def update(self):
         global game_point
         self.blueGem.update()
 
-    # caveイヤを描画
     def draw(self):
-        game_display.blit(cave_map, (0, 0)) # cellレイヤ背景の描画
+        game_display.blit(cave_map, (0, 0))
 
-        # 各インスタンスの描画
         self.blueGem.draw(self.mouseEventUp)
 
-
-        # game_pointの描画
         textDisplay(POINT_NAME+': '+str(math.floor(game_point)),FONT,30,white,DISPLAY_WIDTH/2,20)
 
         button(CELL_LAYER_NAME,20,white,0,0,100,50,button_black,button_up_white,goToCellLayer)
         button(TREE_LAYER_NAME,20,white,110,0,100,50,button_black,button_up_white,goToTreeLayer)
         button(CAVE_LAYER_NAME,20,white,220,0,100,50,button_up_white,button_up_white,goToCaveLayer)
 
-    # draw後に実行
     def clear(self):
         self.setMouseEventUp(False)
 
+# BlueGem reinforces cell_power according to its level
+# if BlueGem clicked: Shopping window appears
+#     if "Level Up" button clicked: Level up and blueStar increases
 class BlueGem:
     def __init__(self):
-        # Load images
         self.img = pygame.image.load(os.path.join('images','blueGem.png'))
         self.act_img = pygame.image.load(os.path.join('images','blueGemEffect_act.png'))
         self.inact_img = pygame.image.load(os.path.join('images','blueGemEffect_inact.png'))
@@ -751,7 +710,6 @@ class BlueGem:
         for i in range(self.star_img_num+1):
             self.star_img_list.append(pygame.image.load(os.path.join('images','blueStar_'+str(i)+'.png')))
 
-        # Size and XY
         self.width = self.img.get_width()
         self.height = self.img.get_height()
         self.x = DISPLAY_WIDTH/2 - self.width/2
@@ -765,16 +723,15 @@ class BlueGem:
         self.cost =[10000, 50000, 100000]
         self.level = 0
 
-        # Status
         self.is_shopping = False
         self.is_generating = False
 
     def update(self):
         pass
 
-    # マウスオーバー時には白く光る(ac画像を表示)
-    # マウスオーバー時に左クリックすると、house_shoppingボタンが出現する
-    # houseとhouse_shoppingボタン以外をクリックすると、house_shoppingボタンは消える
+    # if mouseover: act_img drawed
+    #     else: inact_img drawed
+    # Click out of blueGem: disappear shopping button
     def draw(self,mouseEventUp):
         mouse = pygame.mouse.get_pos()
         game_display.blit(self.img, (self.x, self.y))
@@ -825,6 +782,5 @@ class BlueGem:
             textDisplay('NO Leaf!',FONT,20,bright_red,DISPLAY_WIDTH/2,self.y-50)
 
 
-# ゲームの開始と終了
 gameInit()
 gameQuit()
