@@ -311,6 +311,7 @@ class Cell:
     cell_gen_count = 0
 
     for i in range(cell_gen_img_list_size+1):
+<<<<<<< HEAD
         cell_gen_img_list.append(pygame.image.load(os.path.join('images', 'generate_' + str(i) + '.png')).convert_alpha())
 
     cell_img_stay = pygame.image.load(os.path.join('images', 'cell_img_stay.png')).convert_alpha()
@@ -320,6 +321,17 @@ class Cell:
     cell_img_up = pygame.image.load(os.path.join('images', 'cell_img_up.png')).convert_alpha()
     bud_img = pygame.image.load(os.path.join('images', 'bud.png')).convert_alpha()
     bud_act_img = pygame.image.load(os.path.join('images', 'bud_act.png')).convert_alpha()
+=======
+        cell_gen_img_list.append(pygame.image.load(os.path.join('images', 'generate_' + str(i) + '.png')).convert())
+
+    cell_img_stay = pygame.image.load(os.path.join('images', 'cell_img_stay.png')).convert()
+    cell_img_left = pygame.image.load(os.path.join('images', 'cell_img_left.png')).convert()
+    cell_img_right = pygame.image.load(os.path.join('images', 'cell_img_right.png')).convert()
+    cell_img_down = pygame.image.load(os.path.join('images', 'cell_img_down.png')).convert()
+    cell_img_up = pygame.image.load(os.path.join('images', 'cell_img_up.png')).convert()
+    bud_img = pygame.image.load(os.path.join('images', 'bud.png')).convert()
+    bud_act_img = pygame.image.load(os.path.join('images', 'bud_act.png')).convert()
+>>>>>>> 91f5ff9e5bce277d11a2486478f19f525ffa64fc
 
     def __init__(self,name,x,y,dir):
         self.cell_img = Cell.cell_img_stay # Store a image to display
