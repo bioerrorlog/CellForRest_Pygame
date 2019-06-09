@@ -115,8 +115,6 @@ def gameLoop():
         treeLayerManager.clear()
         caveLayerManager.clear()
 
-        print(clock.get_fps())
-
 
 def gameQuit():
     pygame.quit()
