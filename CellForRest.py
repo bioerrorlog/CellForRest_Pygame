@@ -311,15 +311,16 @@ class Cell:
     for i in range(cell_gen_img_list_size+1):
         cell_gen_img_list.append(pygame.image.load(os.path.join('images', 'generate_' + str(i) + '.png')))
 
+    cell_img_stay = pygame.image.load(os.path.join('images', 'cell_img_stay.png'))
+    cell_img_left = pygame.image.load(os.path.join('images', 'cell_img_left.png'))
+    cell_img_right = pygame.image.load(os.path.join('images', 'cell_img_right.png'))
+    cell_img_down = pygame.image.load(os.path.join('images', 'cell_img_down.png'))
+    cell_img_up = pygame.image.load(os.path.join('images', 'cell_img_up.png'))
+    bud_img = pygame.image.load(os.path.join('images', 'bud.png'))
+    bud_act_img = pygame.image.load(os.path.join('images', 'bud_act.png'))
+
     def __init__(self,name,x,y,dir):
-        self.cell_img_stay = pygame.image.load(os.path.join('images', 'cell_img_stay.png'))
-        self.cell_img_left = pygame.image.load(os.path.join('images', 'cell_img_left.png'))
-        self.cell_img_right = pygame.image.load(os.path.join('images', 'cell_img_right.png'))
-        self.cell_img_down = pygame.image.load(os.path.join('images', 'cell_img_down.png'))
-        self.cell_img_up = pygame.image.load(os.path.join('images', 'cell_img_up.png'))
-        self.bud_img = pygame.image.load(os.path.join('images', 'bud.png'))
-        self.bud_act_img = pygame.image.load(os.path.join('images', 'bud_act.png'))
-        self.cell_img = self.cell_img_stay # Store a image to display
+        self.cell_img = Cell.cell_img_stay # Store a image to display
 
         self.cell_width = self.cell_img.get_width()
         self.cell_height = self.cell_img.get_height()
@@ -354,11 +355,11 @@ class Cell:
             game_display.blit(self.cell_img, (self.cell_x, self.cell_y))
         else:
             if self.cell_x+self.cell_width > mouse[0] > self.cell_x and self.cell_y+self.cell_height > mouse[1] > self.cell_y:
-                game_display.blit(self.bud_act_img, (self.cell_x, self.cell_y))
+                game_display.blit(Cell.bud_act_img, (self.cell_x, self.cell_y))
                 if click[0] == 1:
                     self.is_harvested = True
             else:
-                game_display.blit(self.bud_img, (self.cell_x, self.cell_y))
+                game_display.blit(Cell.bud_img, (self.cell_x, self.cell_y))
 
     def move(self):
         if self.is_moving:
@@ -381,32 +382,32 @@ class Cell:
             else:
                 if self.move_count > 100:
                     self.is_moving = False
-                    self.cell_img = self.cell_img_stay
+                    self.cell_img = Cell.cell_img_stay
                     self.move_count = 0
                 else:
                     if self.cell_dir == 0: # Move to right
-                        self.cell_img = self.cell_img_right
+                        self.cell_img = Cell.cell_img_right
                         self.cell_x += self.cell_speed
                     elif self.cell_dir == 1: # Move to left
-                        self.cell_img = self.cell_img_left
+                        self.cell_img = Cell.cell_img_left
                         self.cell_x -= self.cell_speed
                     elif self.cell_dir == 2: # Move down
-                        self.cell_img = self.cell_img_down
+                        self.cell_img = Cell.cell_img_down
                         self.cell_y += self.cell_speed
                     elif self.cell_dir == 3: # Move up
-                        self.cell_img = self.cell_img_up
+                        self.cell_img = Cell.cell_img_up
                         self.cell_y -= self.cell_speed
                     elif self.cell_dir == 4: # Move to right faster
-                        self.cell_img = self.cell_img_right
+                        self.cell_img = Cell.cell_img_right
                         self.cell_x += self.cell_speed * 2
                     elif self.cell_dir == 5: # Move to left faster
-                        self.cell_img = self.cell_img_left
+                        self.cell_img = Cell.cell_img_left
                         self.cell_x -= self.cell_speed * 2
                     elif self.cell_dir == 6: # Move down faster
-                        self.cell_img = self.cell_img_down
+                        self.cell_img = Cell.cell_img_down
                         self.cell_y += self.cell_speed * 2
                     elif self.cell_dir == 7: # Move up faster
-                        self.cell_img = self.cell_img_up
+                        self.cell_img = Cell.cell_img_up
                         self.cell_y -= self.cell_speed * 2
 
                     self.move_count += 1
@@ -417,7 +418,7 @@ class Cell:
                 self.cell_dir = random.randrange(0, 8)
                 self.move_count = 0
             else:
-                self.cell_img = self.cell_img_stay
+                self.cell_img = Cell.cell_img_stay
                 self.move_count += 1
 
     def budding(self):
