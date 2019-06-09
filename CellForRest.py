@@ -695,6 +695,8 @@ class CaveLayerManager:
     def clear(self):
         self.setMouseEventUp(False)
 
+
+# BlueGem floats on the water
 # BlueGem reinforces cell_power according to its level
 # if BlueGem clicked: Shopping window appears
 #     if "Level Up" button clicked: Level up and blueStar increases
@@ -709,6 +711,10 @@ class BlueGem:
         self.star_img_num = 3
         for i in range(self.star_img_num+1):
             self.star_img_list.append(pygame.image.load(os.path.join('images','blueStar_'+str(i)+'.png')))
+
+        # For floating process
+        self.float = 0
+        self.is_up = True
 
         self.width = self.img.get_width()
         self.height = self.img.get_height()
@@ -726,24 +732,34 @@ class BlueGem:
         self.is_shopping = False
         self.is_generating = False
 
+    # BlueGem floating process
     def update(self):
-        pass
+        if self.is_up == True: # Up
+            if self.float <= 30:
+                self.float += 1
+            else:
+                self.is_up = False
+        else: # Down
+            if self.float >= -30:
+                self.float -= 1
+            else:
+                self.is_up = True
 
     # if mouseover: act_img drawed
     #     else: inact_img drawed
     # Click out of blueGem: disappear shopping button
     def draw(self,mouseEventUp):
         mouse = pygame.mouse.get_pos()
-        game_display.blit(self.img, (self.x, self.y))
+        game_display.blit(self.img, (self.x,self.y-self.float))
 
         if self.x+self.width > mouse[0] > self.x and self.y+self.height > mouse[1] > self.y:
             if mouseEventUp == True:
                 self.is_shopping = True
-            game_display.blit(self.act_img, (self.effect_x, self.effect_y))
+            game_display.blit(self.act_img, (self.effect_x,self.effect_y-self.float))
         else:
             if mouseEventUp == True:
                 self.closeShop()
-            game_display.blit(self.inact_img, (self.effect_x, self.effect_y))
+            game_display.blit(self.inact_img, (self.effect_x,self.effect_y-self.float))
 
         if self.is_shopping == True:
             if self.level < len(self.cost):
@@ -751,8 +767,8 @@ class BlueGem:
             else:
                 textDisplay('Max level!',FONT,20,bright_red,DISPLAY_WIDTH/2,self.y-50)
 
-        game_display.blit(self.water_img, (-5,DISPLAY_HEIGHT-86))
-        game_display.blit(self.star_img_list[self.level], (0,0))
+        game_display.blit(self.water_img,(-5,DISPLAY_HEIGHT-86))
+        game_display.blit(self.star_img_list[self.level],(0,0))
 
 
     def shopping(self):
