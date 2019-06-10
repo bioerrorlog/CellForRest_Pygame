@@ -557,8 +557,8 @@ class Tree:
         self.tree_shop = False
 
         for i in range(self.tree_img_list_num):
-            self.tree_img_list.append(pygame.image.load(os.path.join('images', 'tree_'+str(i)+'.png')))
-            self.tree_ac_img_list.append(pygame.image.load(os.path.join('images', 'tree_ac_'+str(i)+'.png')))
+            self.tree_img_list.append(pygame.image.load(os.path.join('images', 'tree_'+str(i)+'.png')).convert_alpha())
+            self.tree_ac_img_list.append(pygame.image.load(os.path.join('images', 'tree_ac_'+str(i)+'.png')).convert_alpha())
             self.tree_width_list.append(self.tree_img_list[i].get_width())
             self.tree_height_list.append(self.tree_img_list[i].get_height())
             self.tree_xy_list.append((DISPLAY_WIDTH/2-self.tree_width_list[i]/2, DISPLAY_HEIGHT-self.tree_height_list[i]))
