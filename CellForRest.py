@@ -112,6 +112,7 @@ def gameLoop():
         pygame.display.update()
         clock.tick(30)
 
+        cellLayerManager.clear()
         treeLayerManager.clear()
         caveLayerManager.clear()
 
@@ -245,6 +246,9 @@ class CellLayerManager:
         button(CELL_LAYER_NAME, 20, white, 0, 0, 100, 50, button_up_white, button_up_white, goToCellLayer)
         button(TREE_LAYER_NAME, 20, white, 110, 0, 100, 50, button_black, button_up_white, goToTreeLayer)
         button(CAVE_LAYER_NAME, 20, white, 220, 0, 100, 50, button_black, button_up_white, goToCaveLayer)
+
+    def clear(self):
+        pass
 
     def cellgenerating(self):
         global game_point
