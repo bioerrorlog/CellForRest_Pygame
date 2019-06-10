@@ -585,8 +585,7 @@ class Tree:
             if self.tree_level < len(self.tree_img_list) - 1:
                 self.treeShopping()
             else:
-                # If tree_level reaches max level...
-                pass
+                textDisplay('Max level!', FONT, 20, bright_red, DISPLAY_WIDTH/2, self.tree_xy_list[self.tree_level][1]-50)
 
     def treeShopping(self):
         textDisplay('Cost: '+str(self.tree_cost[self.tree_level])+'Leaf', FONT, 20, black, DISPLAY_WIDTH/2, self.tree_xy_list[self.tree_level][1]-70)
