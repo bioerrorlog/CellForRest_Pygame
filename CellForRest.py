@@ -70,7 +70,7 @@ def gameInit():
         button("Quit", 20, black, (DISPLAY_WIDTH / 4)*3-50, (DISPLAY_HEIGHT / 4)*3, 100, 50, button_white, button_up_white, gameQuit)
 
         pygame.display.update()
-        clock.tick(60)
+        clock.tick(30)
 
 
 # Game loop: event.get() -> update() -> draw() -> display.update() -> clear()
@@ -224,7 +224,7 @@ class CellLayerManager:
                 Cell.bud_list.remove(i)
                 game_point += i.cell_power * cave_power
 
-    # TODO: Improve draw speed
+    # TODO: Improve draw speed... Check update(the_dirty_rectangles)
     def draw(self):
         game_display.blit(cell_map, (0, 0))
 
@@ -716,6 +716,7 @@ class BlueGem:
         # For floating process
         self.float = 0
         self.is_up = True
+        self.float_speed = 1/4
 
         self.width = self.img.get_width()
         self.height = self.img.get_height()
@@ -737,12 +738,12 @@ class BlueGem:
     def update(self):
         if self.is_up == True: # Up
             if self.float <= 30:
-                self.float += 1
+                self.float += self.float_speed
             else:
                 self.is_up = False
         else: # Down
             if self.float >= -30:
-                self.float -= 1
+                self.float -= self.float_speed
             else:
                 self.is_up = True
 
