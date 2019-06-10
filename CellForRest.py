@@ -38,17 +38,17 @@ pygame.display.set_caption(GAME_TITLE)
 
 clock = pygame.time.Clock()
 
-init_map = pygame.image.load(os.path.join('images', 'start.png')) # Start screen
-cell_map = pygame.image.load(os.path.join('images', 'cell_map.png')) # Cell layer background
-tree_map = pygame.image.load(os.path.join('images', 'tree_map.png')) # Tree layer background
-cave_map = pygame.image.load(os.path.join('images', 'cave_map.png')) # Cave layer background
-menu_background = pygame.image.load(os.path.join('images', 'menu_background.png')) # Menu screen
+init_map = pygame.image.load(os.path.join('images', 'start.png')).convert_alpha() # Start screen
+cell_map = pygame.image.load(os.path.join('images', 'cell_map.png')).convert_alpha() # Cell layer background
+tree_map = pygame.image.load(os.path.join('images', 'tree_map.png')).convert_alpha() # Tree layer background
+cave_map = pygame.image.load(os.path.join('images', 'cave_map.png')).convert_alpha() # Cave layer background
+menu_background = pygame.image.load(os.path.join('images', 'menu_background.png')).convert_alpha() # Menu screen
 
-button_up_white = pygame.image.load(os.path.join('images', 'button_up_white.png'))
-button_white = pygame.image.load(os.path.join('images', 'button_white.png'))
-button_black = pygame.image.load(os.path.join('images', 'button_black.png'))
+button_up_white = pygame.image.load(os.path.join('images', 'button_up_white.png')).convert_alpha()
+button_white = pygame.image.load(os.path.join('images', 'button_white.png')).convert_alpha()
+button_black = pygame.image.load(os.path.join('images', 'button_black.png')).convert_alpha()
 
-icon_img = pygame.image.load(os.path.join('images', 'icon.png'))
+icon_img = pygame.image.load(os.path.join('images', 'icon.png')).convert_alpha()
 pygame.display.set_icon(icon_img)
 
 FONT = 'JKG-L_3.ttf' # http://font.cutegirl.jp
@@ -63,10 +63,10 @@ def gameInit():
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 gameQuit()
-        game_display.blit(init_map, (0,0))
+        game_display.blit(init_map, (0, 0))
         textDisplay(GAME_TITLE, FONT, 150, white, (DISPLAY_WIDTH/2), (DISPLAY_HEIGHT / 8)*3)
 
-        button("Start",20,black,(DISPLAY_WIDTH/4),(DISPLAY_HEIGHT/4)*3,100,50,button_white,button_up_white, gameLoop)
+        button("Start", 20, black, (DISPLAY_WIDTH/4), (DISPLAY_HEIGHT/4)*3, 100, 50, button_white, button_up_white, gameLoop)
         button("Quit", 20, black, (DISPLAY_WIDTH / 4)*3-50, (DISPLAY_HEIGHT / 4)*3, 100, 50, button_white, button_up_white, gameQuit)
 
         pygame.display.update()
@@ -155,11 +155,11 @@ def button(msg, size, msg_color, x, y, w, h, ic, ac, action = None):
     click = pygame.mouse.get_pressed()
 
     if x+w > mouse[0] > x and y+h > mouse[1] > y:
-        game_display.blit(ac,(x,y))
+        game_display.blit(ac, (x, y))
         if click[0] == 1 and action != None:
             action()
     else:
-        game_display.blit(ic,(x,y))
+        game_display.blit(ic, (x, y))
 
     textDisplay(msg, FONT, size, msg_color, (x+(w/2)), (y+(h/2)))
 
@@ -212,7 +212,7 @@ class CellLayerManager:
         for i in Cell.cell_list:
             i.update()
             if i.cell_age % i.divide_per == 0 and i.divide_limit > 0:
-                self.genCell('SON',i.cell_x,i.cell_y,random.randrange(0, 8))
+                self.genCell('SON', i.cell_x, i.cell_y, random.randrange(0, 8))
                 i.divide_limit -= 1
             if i.cell_age > i.budding_time:
                 i.budding()
@@ -242,9 +242,9 @@ class CellLayerManager:
 
         textDisplay(POINT_NAME+': '+str(math.floor(game_point)),FONT,30,black,DISPLAY_WIDTH/2,20)
 
-        button(CELL_LAYER_NAME,20,white,0,0,100,50,button_up_white,button_up_white,goToCellLayer)
-        button(TREE_LAYER_NAME,20,white,110,0,100,50,button_black,button_up_white,goToTreeLayer)
-        button(CAVE_LAYER_NAME,20,white,220,0,100,50,button_black,button_up_white,goToCaveLayer)
+        button(CELL_LAYER_NAME, 20, white, 0, 0, 100, 50, button_up_white, button_up_white, goToCellLayer)
+        button(TREE_LAYER_NAME, 20, white, 110, 0, 100, 50, button_black, button_up_white, goToTreeLayer)
+        button(CAVE_LAYER_NAME, 20, white, 220, 0, 100, 50, button_black, button_up_white, goToCaveLayer)
 
     def cellgenerating(self):
         global game_point
@@ -254,13 +254,13 @@ class CellLayerManager:
             if Cell.cell_gen_count < Cell.cell_gen_img_list_size:
                 Cell.cell_gen_count += 1
             else:
-                self.genCell('NEW',self.gate.gate_x+20,self.gate.gate_y+40,6)
+                self.genCell('NEW', self.gate.gate_x+20, self.gate.gate_y+40, 6)
                 Cell.cell_gen_count = 0
         else:
-            textDisplay('NO '+POINT_NAME+'!',FONT,20,red,self.gate.gate_x+self.gate.gate_width/2,self.gate.gate_y-20)
+            textDisplay('NO '+POINT_NAME+'!', FONT, 20, red, self.gate.gate_x+self.gate.gate_width/2, self.gate.gate_y-20)
 
-    def genCell(self,name,x,y,dir):
-        cell = Cell(name,x,y,dir)
+    def genCell(self, name, x, y, dir):
+        cell = Cell(name, x, y, dir)
         Cell.cell_list.append(cell)
 
 
@@ -268,8 +268,8 @@ class CellLayerManager:
 # Cell generation process is executed in CellLayerManager
 class Gate:
     def __init__(self, x, y):
-        self.gate_act = pygame.image.load(os.path.join('images', 'gate_act.png'))
-        self.gate_inact = pygame.image.load(os.path.join('images', 'gate_inact.png'))
+        self.gate_act = pygame.image.load(os.path.join('images', 'gate_act.png')).convert_alpha()
+        self.gate_inact = pygame.image.load(os.path.join('images', 'gate_inact.png')).convert_alpha()
 
         self.gate_width = self.gate_act.get_width()
         self.gate_height = self.gate_act.get_height()
@@ -433,7 +433,7 @@ class TreeLayerManager:
         self.mouseEventUp = False
 
     # Get left click from gameLoop()
-    def setMouseEventUp(self,is_clicked):
+    def setMouseEventUp(self, is_clicked):
         self.mouseEventUp = is_clicked
 
     # Increase game_point every frame by tree_power * human
@@ -455,11 +455,11 @@ class TreeLayerManager:
         for i in Human.human_list:
             i.draw()
 
-        textDisplay(POINT_NAME+': '+str(math.floor(game_point)),FONT,30,black,DISPLAY_WIDTH/2,20)
+        textDisplay(POINT_NAME+': '+str(math.floor(game_point)), FONT, 30, black, DISPLAY_WIDTH/2, 20)
 
-        button(CELL_LAYER_NAME,20,white,0,0,100,50,button_black,button_up_white,goToCellLayer)
-        button(TREE_LAYER_NAME,20,white,110,0,100,50,button_up_white,button_up_white,goToTreeLayer)
-        button(CAVE_LAYER_NAME,20,white,220,0,100,50,button_black,button_up_white,goToCaveLayer)
+        button(CELL_LAYER_NAME, 20, white, 0, 0, 100, 50, button_black, button_up_white, goToCellLayer)
+        button(TREE_LAYER_NAME, 20, white, 110, 0, 100, 50, button_up_white, button_up_white, goToTreeLayer)
+        button(CAVE_LAYER_NAME, 20, white, 220, 0, 100, 50, button_black, button_up_white, goToCaveLayer)
 
     def clear(self):
         self.setMouseEventUp(False)
@@ -472,9 +472,9 @@ class Human:
     human_list = []
 
     def __init__(self, name, x):
-        self.human_stay = pygame.image.load(os.path.join('images', 'human_stay.png'))
-        self.human_left = pygame.image.load(os.path.join('images', 'human_left.png'))
-        self.human_right = pygame.image.load(os.path.join('images', 'human_right.png'))
+        self.human_stay = pygame.image.load(os.path.join('images', 'human_stay.png')).convert_alpha()
+        self.human_left = pygame.image.load(os.path.join('images', 'human_left.png')).convert_alpha()
+        self.human_right = pygame.image.load(os.path.join('images', 'human_right.png')).convert_alpha()
         self.human_img = self.human_left # Store image to display
 
         self.human_width = self.human_img.get_width()
@@ -557,11 +557,11 @@ class Tree:
         self.tree_shop = False
 
         for i in range(self.tree_img_list_num):
-            self.tree_img_list.append(pygame.image.load(os.path.join('images','tree_' + str(i) + '.png')))
-            self.tree_ac_img_list.append(pygame.image.load(os.path.join('images','tree_ac_' + str(i) + '.png')))
+            self.tree_img_list.append(pygame.image.load(os.path.join('images', 'tree_'+str(i)+'.png')))
+            self.tree_ac_img_list.append(pygame.image.load(os.path.join('images', 'tree_ac_'+str(i)+'.png')))
             self.tree_width_list.append(self.tree_img_list[i].get_width())
             self.tree_height_list.append(self.tree_img_list[i].get_height())
-            self.tree_xy_list.append((DISPLAY_WIDTH/2-self.tree_width_list[i]/2,DISPLAY_HEIGHT-self.tree_height_list[i]))
+            self.tree_xy_list.append((DISPLAY_WIDTH/2-self.tree_width_list[i]/2, DISPLAY_HEIGHT-self.tree_height_list[i]))
 
     def update(self):
         pass
@@ -569,17 +569,17 @@ class Tree:
     # if mouseover: tree_ac_img_list drawed
     #     else: tree_img_list drawed
     # Click out of tree: disappear treeShopping button
-    def draw(self,mouseEventUp):
+    def draw(self, mouseEventUp):
         mouse = pygame.mouse.get_pos()
 
         if self.tree_xy_list[self.tree_level][0]+self.tree_width_list[self.tree_level] > mouse[0] > self.tree_xy_list[self.tree_level][0] and self.tree_xy_list[self.tree_level][1]+self.tree_height_list[self.tree_level] > mouse[1] > self.tree_xy_list[self.tree_level][1]:
             if mouseEventUp == True:
                 self.tree_shop = True
-            game_display.blit(self.tree_ac_img_list[self.tree_level],self.tree_xy_list[self.tree_level])
+            game_display.blit(self.tree_ac_img_list[self.tree_level], self.tree_xy_list[self.tree_level])
         else:
             if mouseEventUp == True:
                 self.closeTreeShopping()
-            game_display.blit(self.tree_img_list[self.tree_level],self.tree_xy_list[self.tree_level])
+            game_display.blit(self.tree_img_list[self.tree_level], self.tree_xy_list[self.tree_level])
 
         if self.tree_shop == True:
             if self.tree_level < len(self.tree_img_list) - 1:
@@ -589,8 +589,8 @@ class Tree:
                 pass
 
     def treeShopping(self):
-        textDisplay('Cost: '+str(self.tree_cost[self.tree_level])+'Leaf',FONT,20,black,DISPLAY_WIDTH/2,self.tree_xy_list[self.tree_level][1]-70)
-        button("Level Up",20,white,DISPLAY_WIDTH/2-50,self.tree_xy_list[self.tree_level][1]-50,100,50,button_black,button_up_white,self.treeGrowth)
+        textDisplay('Cost: '+str(self.tree_cost[self.tree_level])+'Leaf', FONT, 20, black, DISPLAY_WIDTH/2, self.tree_xy_list[self.tree_level][1]-70)
+        button("Level Up", 20, white, DISPLAY_WIDTH/2-50, self.tree_xy_list[self.tree_level][1]-50, 100, 50, button_black, button_up_white, self.treeGrowth)
 
     def treeGrowth(self):
         global game_point
@@ -599,7 +599,7 @@ class Tree:
             self.tree_level += 1
             self.closeTreeShopping()
         else:
-            textDisplay('NO Leaf!',FONT,20,red,DISPLAY_WIDTH/2,self.tree_xy_list[self.tree_level][1]-100)
+            textDisplay('NO Leaf!', FONT, 20, red, DISPLAY_WIDTH/2, self.tree_xy_list[self.tree_level][1]-100)
 
     def closeTreeShopping(self):
         self.tree_shop = False
@@ -610,8 +610,8 @@ class Tree:
 #     if "Human +1" button clicked: Create a human
 class House:
     def __init__(self):
-        self.act_img = pygame.image.load(os.path.join('images', 'house_act.png'))
-        self.inact_img = pygame.image.load(os.path.join('images', 'house_inact.png'))
+        self.act_img = pygame.image.load(os.path.join('images', 'house_act.png')).convert_alpha()
+        self.inact_img = pygame.image.load(os.path.join('images', 'house_inact.png')).convert_alpha()
 
         self.width = self.act_img.get_width()
         self.height = self.act_img.get_height()
@@ -632,7 +632,7 @@ class House:
     # if mouseover: act_img drawed
     #     else: inact_img drawed
     # Click out of house: disappear shopping button
-    def draw(self,mouseEventUp):
+    def draw(self, mouseEventUp):
         mouse = pygame.mouse.get_pos()
 
         if self.x+self.width > mouse[0] > self.x and self.y+self.height > mouse[1] > self.y:
@@ -648,11 +648,11 @@ class House:
             if self.gen_count < len(self.cost):
                 self.shopping()
             else:
-                textDisplay('No more human!',FONT,20,red,self.x-20,self.y-50)
+                textDisplay('No more human!', FONT, 20, red, self.x-20, self.y-50)
 
     def shopping(self):
-        textDisplay('Cost: '+str(self.cost[self.gen_count])+'Leaf',FONT,20,black,self.x-20,self.y-70)
-        button("Human +1",20,white,self.x-70,self.y-50,100,50,button_black,button_up_white,self.genHuman)
+        textDisplay('Cost: '+str(self.cost[self.gen_count])+'Leaf', FONT, 20, black, self.x-20, self.y-70)
+        button("Human +1", 20, white, self.x-70, self.y-50, 100, 50, button_black, button_up_white, self.genHuman)
 
     def closeShop(self):
         self.is_shopping = False
@@ -661,11 +661,11 @@ class House:
         global game_point
         if(game_point >= self.cost[self.gen_count]):
             game_point -= self.cost[self.gen_count]
-            Human.human_list.append(Human("name",DISPLAY_WIDTH-self.width))
+            Human.human_list.append(Human("name", DISPLAY_WIDTH-self.width))
             self.gen_count += 1
             self.closeShop()
         else:
-            textDisplay('NO Leaf!',FONT,20,red,self.house.y-20,self.house.y-100)
+            textDisplay('NO Leaf!', FONT, 20, red, self.house.y-20, self.house.y-100)
 
 
 # Manage cave layer instance: blueGem
@@ -687,11 +687,11 @@ class CaveLayerManager:
 
         self.blueGem.draw(self.mouseEventUp)
 
-        textDisplay(POINT_NAME+': '+str(math.floor(game_point)),FONT,30,white,DISPLAY_WIDTH/2,20)
+        textDisplay(POINT_NAME+': '+str(math.floor(game_point)), FONT, 30, white, DISPLAY_WIDTH/2, 20)
 
-        button(CELL_LAYER_NAME,20,white,0,0,100,50,button_black,button_up_white,goToCellLayer)
-        button(TREE_LAYER_NAME,20,white,110,0,100,50,button_black,button_up_white,goToTreeLayer)
-        button(CAVE_LAYER_NAME,20,white,220,0,100,50,button_up_white,button_up_white,goToCaveLayer)
+        button(CELL_LAYER_NAME, 20, white, 0, 0, 100, 50, button_black, button_up_white, goToCellLayer)
+        button(TREE_LAYER_NAME, 20, white, 110, 0, 100, 50, button_black, button_up_white, goToTreeLayer)
+        button(CAVE_LAYER_NAME, 20, white, 220, 0, 100, 50, button_up_white, button_up_white, goToCaveLayer)
 
     def clear(self):
         self.setMouseEventUp(False)
@@ -703,15 +703,15 @@ class CaveLayerManager:
 #     if "Level Up" button clicked: Level up and blueStar increases
 class BlueGem:
     def __init__(self):
-        self.img = pygame.image.load(os.path.join('images','blueGem.png'))
-        self.act_img = pygame.image.load(os.path.join('images','blueGemEffect_act.png'))
-        self.inact_img = pygame.image.load(os.path.join('images','blueGemEffect_inact.png'))
-        self.water_img = pygame.image.load(os.path.join('images','water.png'))
+        self.img = pygame.image.load(os.path.join('images','blueGem.png')).convert_alpha()
+        self.act_img = pygame.image.load(os.path.join('images','blueGemEffect_act.png')).convert_alpha()
+        self.inact_img = pygame.image.load(os.path.join('images','blueGemEffect_inact.png')).convert_alpha()
+        self.water_img = pygame.image.load(os.path.join('images','water.png')).convert_alpha()
 
         self.star_img_list = []
         self.star_img_num = 3
         for i in range(self.star_img_num+1):
-            self.star_img_list.append(pygame.image.load(os.path.join('images','blueStar_'+str(i)+'.png')))
+            self.star_img_list.append(pygame.image.load(os.path.join('images','blueStar_'+str(i)+'.png')).convert_alpha())
 
         # For floating process
         self.float = 0
@@ -749,32 +749,32 @@ class BlueGem:
     # if mouseover: act_img drawed
     #     else: inact_img drawed
     # Click out of blueGem: disappear shopping button
-    def draw(self,mouseEventUp):
+    def draw(self, mouseEventUp):
         mouse = pygame.mouse.get_pos()
-        game_display.blit(self.img, (self.x,self.y-self.float))
+        game_display.blit(self.img, (self.x, self.y-self.float))
 
         if self.x+self.width > mouse[0] > self.x and self.y+self.height > mouse[1] > self.y:
             if mouseEventUp == True:
                 self.is_shopping = True
-            game_display.blit(self.act_img, (self.effect_x,self.effect_y-self.float))
+            game_display.blit(self.act_img, (self.effect_x, self.effect_y-self.float))
         else:
             if mouseEventUp == True:
                 self.closeShop()
-            game_display.blit(self.inact_img, (self.effect_x,self.effect_y-self.float))
+            game_display.blit(self.inact_img, (self.effect_x, self.effect_y-self.float))
 
         if self.is_shopping == True:
             if self.level < len(self.cost):
                 self.shopping()
             else:
-                textDisplay('Max level!',FONT,20,bright_red,DISPLAY_WIDTH/2,self.y-50)
+                textDisplay('Max level!', FONT, 20, bright_red, DISPLAY_WIDTH/2, self.y-50)
 
-        game_display.blit(self.water_img,(-5,DISPLAY_HEIGHT-86))
-        game_display.blit(self.star_img_list[self.level],(0,0))
+        game_display.blit(self.water_img,(-5, DISPLAY_HEIGHT-86))
+        game_display.blit(self.star_img_list[self.level], (0, 0))
 
 
     def shopping(self):
-        textDisplay('Cost: '+str(self.cost[self.level])+'Leaf',FONT,20,white,DISPLAY_WIDTH/2,self.y-90)
-        button("Level Up",20,white,DISPLAY_WIDTH/2-50,self.y-70,100,50,button_black,button_up_white,self.genStar)
+        textDisplay('Cost: '+str(self.cost[self.level])+'Leaf', FONT, 20, white, DISPLAY_WIDTH/2, self.y-90)
+        button("Level Up", 20, white, DISPLAY_WIDTH/2-50, self.y-70, 100, 50, button_black, button_up_white, self.genStar)
 
     def closeShop(self):
         self.is_shopping = False
@@ -796,7 +796,7 @@ class BlueGem:
             self.closeShop()
 
         else:
-            textDisplay('NO Leaf!',FONT,20,bright_red,DISPLAY_WIDTH/2,self.y-50)
+            textDisplay('NO Leaf!', FONT, 20, bright_red, DISPLAY_WIDTH/2, self.y-50)
 
 
 gameInit()
