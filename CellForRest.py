@@ -74,7 +74,7 @@ def gameInit():
 
 
 # Game loop: event.get() -> update() -> draw() -> display.update() -> clear()
-# x button: Quit game
+# Close button: Quit game
 # m button: Menu
 # Left click: Inform each game layer via setMouseEventUp()
 def gameLoop():
