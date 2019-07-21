@@ -12,7 +12,7 @@ POINT_NAME = 'Leaf' # Game currency
 DISPLAY_WIDTH = 1200
 DISPLAY_HEIGHT = 800
 
-game_point = 1000000 # Default game currency
+game_point = 100 # Default game currency
 
 cave_power = 1 # Used by cell layer to increase cell power
 
@@ -229,12 +229,12 @@ class CellLayerManager:
     def draw(self):
         game_display.blit(cell_map, (0, 0))
 
-        self.gate.draw()
-
         for i in Cell.cell_list:
             i.draw()
         for i in Cell.bud_list:
             i.draw()
+
+        self.gate.draw()
 
         if self.gate.is_generating == True:
                 self.cellgenerating()
@@ -253,13 +253,14 @@ class CellLayerManager:
     def cellgenerating(self):
         global game_point
 
-        if game_point > 0:
-            game_point -= 1
+        if game_point > 1*2**Cell.cell_num:
+            game_point -= 1*2**Cell.cell_num
             if Cell.cell_gen_count < Cell.cell_gen_img_list_size:
                 Cell.cell_gen_count += 1
             else:
                 self.genCell('NEW', self.gate.gate_x+20, self.gate.gate_y+40, 6)
                 Cell.cell_gen_count = 0
+                Cell.cell_num += 1
         else:
             textDisplay('NO '+POINT_NAME+'!', FONT, 20, red, self.gate.gate_x+self.gate.gate_width/2, self.gate.gate_y-20)
 
@@ -293,6 +294,7 @@ class Gate:
 
         if self.gate_x+self.gate_width > mouse[0] > self.gate_x and self.gate_y+self.gate_height > mouse[1] > self.gate_y:
             game_display.blit(self.gate_act, (self.gate_x, self.gate_y))
+            textDisplay('Cost: '+str(30*1*2**Cell.cell_num)+'Leaf/sec', FONT, 20, black, DISPLAY_WIDTH/2, self.gate_y)
             if click[0] == 1:
                 self.is_generating = True
         else:
@@ -303,6 +305,9 @@ class Gate:
 # After while (budding_time), cell changes to bud
 # Buds can be harvested by clicking
 class Cell:
+    # Genarated cell total number
+    cell_num = 0
+
     # Instance list
     cell_list = []
     bud_list = []
@@ -555,8 +560,8 @@ class Tree:
         self.tree_height_list = []
         self.tree_xy_list = []
 
-        self.tree_cost =[100, 500, 1000, 3000, 10000, 50000, 100000]
-        self.tree_power =[0, 0.1, 1, 11, 111, 1111, 11111, 111111]
+        self.tree_cost =[5000, 50000, 1000000, 300000000, 10000000000, 50000000000000, 100000000000000000000]
+        self.tree_power =[0, 0.5, 3, 11, 111, 1111, 11111, 111111]
 
         self.tree_shop = False
 
@@ -622,7 +627,7 @@ class House:
         self.y = DISPLAY_HEIGHT - self.height
 
         # Human creation cost
-        self.cost =[100, 500, 1000, 3000, 10000, 50000, 100000]
+        self.cost =[6000, 10000, 100000, 300000, 1000000, 5000000, 10000000]
 
         self.gen_count = 0
 
@@ -668,7 +673,7 @@ class House:
             self.gen_count += 1
             self.closeShop()
         else:
-            textDisplay('NO Leaf!', FONT, 20, red, self.house.y-20, self.house.y-100)
+            textDisplay('NO Leaf!', FONT, 20, red, self.x-20, self.y-100)
 
 
 # Manage cave layer instance: blueGem
@@ -731,7 +736,7 @@ class BlueGem:
         self.effect_y = DISPLAY_HEIGHT - self.effect_height
 
         # Level up cost
-        self.cost =[10000, 50000, 100000]
+        self.cost =[100000, 5000000000, 10000000000000000]
         self.level = 0
 
         self.is_shopping = False
@@ -800,7 +805,7 @@ class BlueGem:
             self.closeShop()
 
         else:
-            textDisplay('NO Leaf!', FONT, 20, bright_red, DISPLAY_WIDTH/2, self.y-50)
+            textDisplay('NO Leaf!', FONT, 20, bright_red, DISPLAY_WIDTH/2, self.y-110)
 
 
 gameInit()
