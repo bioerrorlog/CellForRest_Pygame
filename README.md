@@ -2,6 +2,9 @@
 
 My first project - Clicker game in Python
 
+Making blog (日本語):  
+https://www.bioerrorlog.work/entry/pygame-cellfor-rest
+
 ![start menu](https://raw.githubusercontent.com/bioerrorlog/CellForRest_Pygame/master/screen_shots/start_menu.png)
 
 ![cell stage](https://raw.githubusercontent.com/bioerrorlog/CellForRest_Pygame/master/screen_shots/cell_stage.png)
