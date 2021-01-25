@@ -38,17 +38,17 @@ pygame.display.set_caption(GAME_TITLE)
 
 clock = pygame.time.Clock()
 
-init_map = pygame.image.load(os.path.join('images', 'start.png')).convert_alpha() # Start screen
-cell_map = pygame.image.load(os.path.join('images', 'cell_map.png')).convert_alpha() # Cell layer background
-tree_map = pygame.image.load(os.path.join('images', 'tree_map.png')).convert_alpha() # Tree layer background
-cave_map = pygame.image.load(os.path.join('images', 'cave_map.png')).convert_alpha() # Cave layer background
-menu_background = pygame.image.load(os.path.join('images', 'menu_background.png')).convert_alpha() # Menu screen
+init_map = pygame.image.load(os.path.join('data/images', 'start.png')).convert_alpha() # Start screen
+cell_map = pygame.image.load(os.path.join('data/images', 'cell_map.png')).convert_alpha() # Cell layer background
+tree_map = pygame.image.load(os.path.join('data/images', 'tree_map.png')).convert_alpha() # Tree layer background
+cave_map = pygame.image.load(os.path.join('data/images', 'cave_map.png')).convert_alpha() # Cave layer background
+menu_background = pygame.image.load(os.path.join('data/images', 'menu_background.png')).convert_alpha() # Menu screen
 
-button_up_white = pygame.image.load(os.path.join('images', 'button_up_white.png')).convert_alpha()
-button_white = pygame.image.load(os.path.join('images', 'button_white.png')).convert_alpha()
-button_black = pygame.image.load(os.path.join('images', 'button_black.png')).convert_alpha()
+button_up_white = pygame.image.load(os.path.join('data/images', 'button_up_white.png')).convert_alpha()
+button_white = pygame.image.load(os.path.join('data/images', 'button_white.png')).convert_alpha()
+button_black = pygame.image.load(os.path.join('data/images', 'button_black.png')).convert_alpha()
 
-icon_img = pygame.image.load(os.path.join('images', 'icon.png')).convert_alpha()
+icon_img = pygame.image.load(os.path.join('data/images', 'icon.png')).convert_alpha()
 pygame.display.set_icon(icon_img)
 
 FONT = 'JKG-L_3.ttf' # http://font.cutegirl.jp
@@ -273,8 +273,8 @@ class CellLayerManager:
 # Cell generation process is executed in CellLayerManager
 class Gate:
     def __init__(self, x, y):
-        self.gate_act = pygame.image.load(os.path.join('images', 'gate_act.png')).convert_alpha()
-        self.gate_inact = pygame.image.load(os.path.join('images', 'gate_inact.png')).convert_alpha()
+        self.gate_act = pygame.image.load(os.path.join('data/images', 'gate_act.png')).convert_alpha()
+        self.gate_inact = pygame.image.load(os.path.join('data/images', 'gate_inact.png')).convert_alpha()
 
         self.gate_width = self.gate_act.get_width()
         self.gate_height = self.gate_act.get_height()
@@ -318,15 +318,15 @@ class Cell:
     cell_gen_count = 0
 
     for i in range(cell_gen_img_list_size+1):
-        cell_gen_img_list.append(pygame.image.load(os.path.join('images', 'generate_' + str(i) + '.png')).convert_alpha())
+        cell_gen_img_list.append(pygame.image.load(os.path.join('data/images', 'generate_' + str(i) + '.png')).convert_alpha())
 
-    cell_img_stay = pygame.image.load(os.path.join('images', 'cell_img_stay.png')).convert_alpha()
-    cell_img_left = pygame.image.load(os.path.join('images', 'cell_img_left.png')).convert_alpha()
-    cell_img_right = pygame.image.load(os.path.join('images', 'cell_img_right.png')).convert_alpha()
-    cell_img_down = pygame.image.load(os.path.join('images', 'cell_img_down.png')).convert_alpha()
-    cell_img_up = pygame.image.load(os.path.join('images', 'cell_img_up.png')).convert_alpha()
-    bud_img = pygame.image.load(os.path.join('images', 'bud.png')).convert_alpha()
-    bud_act_img = pygame.image.load(os.path.join('images', 'bud_act.png')).convert_alpha()
+    cell_img_stay = pygame.image.load(os.path.join('data/images', 'cell_img_stay.png')).convert_alpha()
+    cell_img_left = pygame.image.load(os.path.join('data/images', 'cell_img_left.png')).convert_alpha()
+    cell_img_right = pygame.image.load(os.path.join('data/images', 'cell_img_right.png')).convert_alpha()
+    cell_img_down = pygame.image.load(os.path.join('data/images', 'cell_img_down.png')).convert_alpha()
+    cell_img_up = pygame.image.load(os.path.join('data/images', 'cell_img_up.png')).convert_alpha()
+    bud_img = pygame.image.load(os.path.join('data/images', 'bud.png')).convert_alpha()
+    bud_act_img = pygame.image.load(os.path.join('data/images', 'bud_act.png')).convert_alpha()
 
     def __init__(self,name,x,y,dir):
         self.cell_img = Cell.cell_img_stay # Store a image to display
@@ -481,9 +481,9 @@ class Human:
     human_list = []
 
     def __init__(self, name, x):
-        self.human_stay = pygame.image.load(os.path.join('images', 'human_stay.png')).convert_alpha()
-        self.human_left = pygame.image.load(os.path.join('images', 'human_left.png')).convert_alpha()
-        self.human_right = pygame.image.load(os.path.join('images', 'human_right.png')).convert_alpha()
+        self.human_stay = pygame.image.load(os.path.join('data/images', 'human_stay.png')).convert_alpha()
+        self.human_left = pygame.image.load(os.path.join('data/images', 'human_left.png')).convert_alpha()
+        self.human_right = pygame.image.load(os.path.join('data/images', 'human_right.png')).convert_alpha()
         self.human_img = self.human_left # Store image to display
 
         self.human_width = self.human_img.get_width()
@@ -566,8 +566,8 @@ class Tree:
         self.tree_shop = False
 
         for i in range(self.tree_img_list_num):
-            self.tree_img_list.append(pygame.image.load(os.path.join('images', 'tree_'+str(i)+'.png')).convert_alpha())
-            self.tree_ac_img_list.append(pygame.image.load(os.path.join('images', 'tree_ac_'+str(i)+'.png')).convert_alpha())
+            self.tree_img_list.append(pygame.image.load(os.path.join('data/images', 'tree_'+str(i)+'.png')).convert_alpha())
+            self.tree_ac_img_list.append(pygame.image.load(os.path.join('data/images', 'tree_ac_'+str(i)+'.png')).convert_alpha())
             self.tree_width_list.append(self.tree_img_list[i].get_width())
             self.tree_height_list.append(self.tree_img_list[i].get_height())
             self.tree_xy_list.append((DISPLAY_WIDTH/2-self.tree_width_list[i]/2, DISPLAY_HEIGHT-self.tree_height_list[i]))
@@ -618,8 +618,8 @@ class Tree:
 #     if "Human +1" button clicked: Create a human
 class House:
     def __init__(self):
-        self.act_img = pygame.image.load(os.path.join('images', 'house_act.png')).convert_alpha()
-        self.inact_img = pygame.image.load(os.path.join('images', 'house_inact.png')).convert_alpha()
+        self.act_img = pygame.image.load(os.path.join('data/images', 'house_act.png')).convert_alpha()
+        self.inact_img = pygame.image.load(os.path.join('data/images', 'house_inact.png')).convert_alpha()
 
         self.width = self.act_img.get_width()
         self.height = self.act_img.get_height()
@@ -711,15 +711,15 @@ class CaveLayerManager:
 #     if "Level Up" button clicked: Level up and blueStar increases
 class BlueGem:
     def __init__(self):
-        self.img = pygame.image.load(os.path.join('images','blueGem.png')).convert_alpha()
-        self.act_img = pygame.image.load(os.path.join('images','blueGemEffect_act.png')).convert_alpha()
-        self.inact_img = pygame.image.load(os.path.join('images','blueGemEffect_inact.png')).convert_alpha()
-        self.water_img = pygame.image.load(os.path.join('images','water.png')).convert_alpha()
+        self.img = pygame.image.load(os.path.join('data/images','blueGem.png')).convert_alpha()
+        self.act_img = pygame.image.load(os.path.join('data/images','blueGemEffect_act.png')).convert_alpha()
+        self.inact_img = pygame.image.load(os.path.join('data/images','blueGemEffect_inact.png')).convert_alpha()
+        self.water_img = pygame.image.load(os.path.join('data/images','water.png')).convert_alpha()
 
         self.star_img_list = []
         self.star_img_num = 3
         for i in range(self.star_img_num+1):
-            self.star_img_list.append(pygame.image.load(os.path.join('images','blueStar_'+str(i)+'.png')).convert_alpha())
+            self.star_img_list.append(pygame.image.load(os.path.join('data/images','blueStar_'+str(i)+'.png')).convert_alpha())
 
         # For floating process
         self.float = 0
