@@ -51,7 +51,7 @@ button_black = pygame.image.load(os.path.join('data/images', 'button_black.png')
 icon_img = pygame.image.load(os.path.join('data/images', 'icon.png')).convert_alpha()
 pygame.display.set_icon(icon_img)
 
-FONT = 'JKG-L_3.ttf' # http://font.cutegirl.jp
+FONT = 'data/JKG-L_3.ttf' # http://font.cutegirl.jp
 
 
 # Init start menu
