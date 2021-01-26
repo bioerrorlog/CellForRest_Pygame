@@ -3,6 +3,7 @@ import time
 import random
 import os
 import math
+import sys
 from pygame.locals import *
 
 pygame.init()
@@ -119,7 +120,7 @@ def gameLoop():
 
 def gameQuit():
     pygame.quit()
-    quit()
+    sys.exit()
 
 
 def menu():
