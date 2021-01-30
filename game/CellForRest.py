@@ -561,7 +561,7 @@ class Tree:
         self.tree_height_list = []
         self.tree_xy_list = []
 
-        self.tree_cost =[5000, 50000, 1000000, 3000000, 10000000, 5000000000, 100000000000]
+        self.tree_cost =[5000, 50000, 1000000, 3000000, 10000000, 5000000000, 10000000000]
         self.tree_power =[0, 0.5, 3, 11, 111, 1111, 11111, 111111]
 
         self.tree_shop = False
@@ -737,7 +737,7 @@ class BlueGem:
         self.effect_y = DISPLAY_HEIGHT - self.effect_height
 
         # Level up cost
-        self.cost =[100000, 10000000, 1000000000000000]
+        self.cost =[100000, 10000000, 10000000000000]
         self.level = 0
 
         self.is_shopping = False
